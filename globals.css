@@ -1,0 +1,28 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+body {
+  @apply bg-gray-100;
+}
+
+.container {
+  @apply max-w-4xl;
+}
+
+input, button {
+  @apply rounded;
+}
+
+input {
+  @apply border p-2;
+}
+
+button {
+  @apply p-2 text-white;
+}
+
+button:hover {
+  @apply opacity-80;
+}
+
