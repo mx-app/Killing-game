@@ -25,7 +25,7 @@ function startGame() {
     gameInterval = setInterval(() => {
         if (!gameOver) {
             timeLeft--;
-            timerDisplay.textContent = `الوقت: ${timeLeft}`;
+            timerDisplay.textContent = `Time : ${timeLeft}`;
             if (timeLeft <= 0) {
                 gameOver = true;
                 clearInterval(gameInterval);
@@ -81,11 +81,11 @@ function createFallingItem() {
 }
 
 function updateScore() {
-    scoreDisplay.textContent = `العملات: ${score}`;
+    scoreDisplay.textContent = `Balance : ${score} SP`;
 }
 
 function updateMissedCount() {
-    missedCountDisplay.textContent = `المحاولات: ${missedCount}/10`;
+    missedCountDisplay.textContent = `Attempts: ${missedCount}/10`;
 }
 
 function showRetryButton() {
