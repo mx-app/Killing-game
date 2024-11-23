@@ -1,3 +1,17 @@
+// منع القائمة السياقية
+        document.addEventListener("contextmenu", function(event) {
+            event.preventDefault();
+        });
+
+        // منع الضغط المطوّل على العناصر
+        document.querySelectorAll("img, p").forEach(element => {
+            element.addEventListener("mousedown", e => e.preventDefault());
+            element.addEventListener("touchstart", e => e.preventDefault());
+        });
+
+
+
+
 const scoreDisplay = document.getElementById('score');
 const missedCountDisplay = document.getElementById('missedCount');
 const timerDisplay = document.getElementById('timer');
