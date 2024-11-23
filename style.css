@@ -1,3 +1,24 @@
+@media only screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+
+/* منع تحديد النص */
+* {
+    user-select: none;
+    -webkit-user-select: none; /* لأجهزة iOS */
+    -ms-user-select: none; /* لمتصفحات إنترنت إكسبلورر */
+}
+
+/* منع سحب الصور */
+img {
+    pointer-events: none;
+}
+
+
+
 /* إزالة تأثير التركيز */
 button, input, select, textarea, img, a {
     outline: none;
