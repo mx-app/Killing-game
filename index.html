@@ -8,26 +8,35 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+    <!-- شاشة التحميل -->
     <div id="loadingScreen" class="loading">
         <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
     </div>
     
- <div class="container">
-    <div id="gameArea">
-        <div id="score">Balance : </div>
-        <div id="timer">Time: 60</div>
-        <div id="missedCount">Attempts: 10/10</div>
+    <!-- واجهة المستخدم -->
+    <div class="container">
+        
+        <div id="game-user">
+        <!-- بيانات المستخدم -->
+        <div id="userTelegramIdDisplay"></div>
+        <div id="userTelegramNameDisplay"></div>
+      </div>
+        
+        <!-- منطقة اللعبة -->
+        <div id="gameArea">
+            <div id="score">Balance: 0</div>
+            <div id="timer">Time: 60</div>
+            <div id="missedCount">Attempts: 10/10</div>
+        </div>
+
+        <!-- زر المحاولة مرة أخرى -->
+        <div id="retryButton" class="retryButton" style="display:none;">
+            Try again
+        </div>
     </div>
 
-    <div id="retryButton" class="retryButton">
-    Try again
-   </div>
- </div>
-
     <script src="script.js"></script>
-
-
 </body>
 </html>
