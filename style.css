@@ -70,7 +70,7 @@ body {
     justify-content: space-between;  /* توزيع العناصر بالتساوي */
     align-items: center;  /* محاذاة العناصر عموديًا */
     width: 95%;
-    height: 40px;
+    height: 45px;
     border: 2px solid #1a1a1a;
     background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
@@ -80,6 +80,7 @@ body {
     font-weight: bold;
     white-space: nowrap;
     border-radius: 10px;
+    z-index: 1000;
 }
 
 #game-bar div {
