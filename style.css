@@ -211,12 +211,6 @@ body {
     margin: 0 15px;
 }
 
-
-#game-user {
-    display: none;  /* إخفاء العنصر بالكامل */
-}
-
-
 /* #game-user {
     border: 2px solid #1a1a1a;
     width: 50%;
