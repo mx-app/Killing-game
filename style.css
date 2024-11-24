@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+
+
 @media only screen and (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -34,9 +37,8 @@ button, input, select, textarea, img, a {
 }
 
 
-
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Rubik', sans-serif;
     margin: 0;
     padding: 0;
     background: #000;
@@ -80,22 +82,26 @@ body {
 
 #score {
     top: 10px;
-    left: 10px;
-}
-
-#missedCount {
-    top: 10px;
-    right: 10px;
+    left: 20px;
+    font-weight: bold;
 }
 
 #timer {
     top: 40px;
-    left: 10px;
+    left: 20px;
+    font-weight: bold;
 }
 
+#missedCount {
+    top: 60px;
+    left: 20px;
+    font-weight: bold; /* استخدام font-weight بدلاً من font-width */
+}
+
+
 .fallingItem {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-image: url('i/coinsaw.png');
     background-size: cover;
