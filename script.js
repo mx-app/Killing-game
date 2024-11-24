@@ -112,6 +112,28 @@ async function updateGameState() {
     }
 }
 
+async function updateGameStateInDatabase(updatedData, supabase, uiElements) {
+    const userId = uiElements.userTelegramIdDisplay.innerText;
+
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .update(updatedData) // البيانات الجديدة
+            .eq('telegram_id', userId); // شرط التحديث
+
+        if (error) {
+            console.error('Error updating game state in Supabase:', error);
+            return false;
+        }
+
+        console.log('Game state updated successfully in Supabase:', data);
+        return true;
+    } catch (err) {
+        console.error('Unexpected error while updating game state:', err);
+        return false;
+    }
+}
+
 // بدء اللعبة
 function startGame() {
     gameOver = false;
