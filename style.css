@@ -74,10 +74,10 @@ body {
     background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
     top: 10px;
-    left: 50%;
+    left: 50%;  /* ضبط الموقع في منتصف الشاشة */
     transform: translateX(-50%);  /* محاذاة العنصر في المنتصف أفقيًا */
     font-weight: bold;
-    white-space: nowrap;  
+    white-space: nowrap;
     border-radius: 10px;
 }
 
