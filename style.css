@@ -117,6 +117,7 @@ body {
     transition: transform 0.3s ease, opacity 0.5s ease;
 }
 
+
 .fallingItem.dead {
     transform: scale(2) rotate(360deg);
     opacity: 0;
@@ -221,3 +222,24 @@ body {
     margin-bottom: 5px;
     text-align: center;
 }
+
+.FreezeItem {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-image: url('i/Freeze.png');
+    background-size: cover;
+    position: absolute;
+    cursor: pointer;
+} 
+
+.bombItem {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-image: url('i/bombb.png');
+    background-size: cover;
+    position: absolute;
+    cursor: pointer;
+} 
+
