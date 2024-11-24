@@ -105,22 +105,19 @@ body {
     font-size: 14px;
     color: white;
     font-weight: bold;
-    padding: 8px;
+    padding: 2px;
     border-radius: 10px;
 } 
 
 #timer {
     width: 20%;
     height: 45px;
-    top: 30%;
-    left: 50%;                       
-    transform: translateX(-50%);     
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
     font-size: 14px;
     color: white;
     font-weight: bold;
-    padding: 8px;
+    padding: 2px;
     border-radius: 10px;
 } 
 
