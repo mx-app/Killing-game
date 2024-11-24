@@ -82,12 +82,12 @@ body {
 
 #score {
     top: 15px;
-    left: 15px;
+    left: 10px;
     font-weight: bold;
 }
 
 #timer {
-    top: 15px;
+    top: 20px;
     left: 50%;
     transform: translate(-50%, -50%);
     font-weight: bold;
@@ -95,7 +95,7 @@ body {
 
 #missedCount {
     top: 15px;
-    right: 15px;
+    right: 10px;
     font-weight: bold; /* استخدام font-weight بدلاً من font-width */
 }
 
@@ -190,3 +190,11 @@ body {
     margin: 0 15px;
 }
 
+#gameArea {
+    width: 70%;
+    height: 50px;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.9);
+    bottom: 20px;
+    left: 10px;
+  }
