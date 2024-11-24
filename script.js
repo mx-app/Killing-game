@@ -1,152 +1,186 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './i/Scripts/config.js';
-
-// إنشاء عميل Supabase
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // تعريف عناصر واجهة المستخدم
 const uiElements = {
-  purchaseNotification: document.getElementById('purchaseNotification'),
   scoreDisplay: document.getElementById('score'),
   timerDisplay: document.getElementById('timer'),
   retryButton: document.getElementById('retryButton'),
-  userTelegramIdDisplay: document.getElementById('userTelegramId'),
-  userTelegramNameDisplay: document.getElementById('userTelegramName'),
+  startButton: document.getElementById('startButton'),
+  purchaseNotification: document.getElementById('purchaseNotification'),
 };
 
-// متغيرات اللعبة
 let score = 0;
 let timeLeft = 60;
 let gameOver = false;
-let freezeUses = 2;
 let isFrozen = false;
 let fallingInterval;
 let gameInterval;
-let gameState = { balance: 0 };
 
 // تعطيل التأثيرات الافتراضية للمس
 window.addEventListener('touchstart', (event) => event.preventDefault());
 
-// جلب بيانات المستخدم من Telegram
-async function fetchUserDataFromTelegram() {
-  const telegramApp = window.Telegram.WebApp;
-  telegramApp.ready();
-
-  const userTelegramId = telegramApp.initDataUnsafe.user?.id;
-  const userTelegramName = telegramApp.initDataUnsafe.user?.username;
-
-  if (!userTelegramId || !userTelegramName) {
-    console.error("Failed to fetch Telegram user data.");
-    return;
-  }
-
-  uiElements.userTelegramIdDisplay.innerText = `ID: ${userTelegramId}`;
-  uiElements.userTelegramNameDisplay.innerText = `Username: ${userTelegramName}`;
-
-  try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('telegram_id', userTelegramId)
-      .maybeSingle();
-
-    if (error) {
-      console.error('Error fetching user data from Supabase:', error);
-      return;
-    }
-
-    if (data) {
-      gameState = { ...gameState, ...data };
-      updateUI();
-    } else {
-      await registerNewUser(userTelegramId, userTelegramName);
-    }
-  } catch (error) {
-    console.error("Error fetching user data from Supabase:", error);
-  }
-}
-
-// دالة لتحديث واجهة المستخدم
+// تحديث واجهة المستخدم
 function updateUI() {
-  uiElements.scoreDisplay.innerText = `Score: ${gameState.balance}`;
-  uiElements.timerDisplay.innerText = `Time Left: ${timeLeft}s`;
+  uiElements.scoreDisplay.innerText = `${score}`;
+  uiElements.timerDisplay.innerText = `00 : ${timeLeft}`;
 }
 
-// دالة لإنشاء العنصر العائم (مثل العنصر الذي يتم تدميره)
-function createFallingItem(type, x, y) {
-  const item = document.createElement('div');
-  item.classList.add('fallingItem', type);
-  item.style.left = `${x}px`;
-  item.style.top = `${y}px`;
+// بدء اللعبة
+function startGame() {
+  score = 0;
+  timeLeft = 60;
+  gameOver = false;
+  updateUI();
 
-  item.addEventListener('touchstart', () => {
-    if (item.classList.contains('freeze')) {
-      applyFreezeEffect();
-    } else if (item.classList.contains('bomb')) {
-      applyBombEffect();
-    } else {
-      item.classList.add('dead');
-      score++;
-      gameState.balance++;
+  uiElements.startButton.style.display = 'none';
+  uiElements.retryButton.style.display = 'none';
+
+  // عداد الوقت
+  gameInterval = setInterval(() => {
+    if (!gameOver) {
+      timeLeft--;
       updateUI();
-      item.remove();
+      if (timeLeft <= 0) endGame(true);
     }
-  });
+  }, 1000);
 
-  document.getElementById('gameArea').appendChild(item);
+  // إنشاء العناصر المتساقطة
+  fallingInterval = setInterval(() => {
+    if (!gameOver) createRandomItem();
+  }, 400);
 }
 
-// تأثيرات التجميد
-function applyFreezeEffect() {
+// إنهاء اللعبة
+function endGame(isWin) {
+  gameOver = true;
+  clearInterval(gameInterval);
+  clearInterval(fallingInterval);
+
+  if (isWin) {
+    showNotification('You won!');
+  } else {
+    activateBombEffect();
+    showNotification('Game Over!');
+  }
+
+  uiElements.retryButton.style.display = 'block';
+}
+
+// إنشاء عنصر عشوائي
+function createRandomItem() {
+  const random = Math.random();
+  if (random < 0.1) {
+    createFreezeItem();
+  } else if (random < 0.2) {
+    createBombItem();
+  } else {
+    createFallingItem();
+  }
+}
+
+// إنشاء عنصر بحجم عشوائي (العنصر الأساسي)
+function createFallingItem() {
+  const size = Math.random() * 30 + 20; // حجم بين 20 و 50 بكسل
+  createItem('fallingItem', size, () => {
+    score++;
+    showHitEffect();
+    updateUI();
+  });
+}
+
+// إنشاء عنصر التجميد
+function createFreezeItem() {
+  createItem('FreezeItem', 60, () => {
+    activateFreezeEffect();
+  });
+}
+
+// إنشاء عنصر القنبلة
+function createBombItem() {
+  createItem('bombItem', 60, () => {
+    endGame(false);
+  });
+}
+
+// إنشاء عنصر عام
+function createItem(className, size, onClick) {
+  const item = document.createElement('div');
+  item.className = className;
+  item.style.width = `${size}px`;
+  item.style.height = `${size}px`;
+  item.style.left = `${Math.random() * (window.innerWidth - size)}px`;
+  item.style.top = '-50px';
+  document.body.appendChild(item);
+
+  let falling = setInterval(() => {
+    if (!gameOver) {
+      item.style.top = `${item.offsetTop + 5}px`;
+      if (item.offsetTop > window.innerHeight) {
+        document.body.removeChild(item);
+        clearInterval(falling);
+      }
+    }
+  }, 30);
+
+  // تأثير عند النقر أو التحريك
+  item.addEventListener('mousedown', () => handleHit(item, onClick));
+  item.addEventListener('mousemove', () => handleHit(item, onClick));
+}
+
+// معالجة القتل بالتأثير
+function handleHit(item, onClick) {
+  if (!gameOver && item.style.opacity !== '0') {
+    item.style.transform = 'scale(1.5)';
+    item.style.opacity = '0';
+    setTimeout(() => item.remove(), 200);
+    onClick();
+  }
+}
+
+// تأثير القتل
+function showHitEffect() {
+  const effect = document.createElement('div');
+  effect.className = 'hit-effect';
+  document.body.appendChild(effect);
+  setTimeout(() => effect.remove(), 300);
+}
+
+// تأثير التجميد
+function activateFreezeEffect() {
+  if (isFrozen) return;
   isFrozen = true;
-  document.body.classList.add('frozen-effect');
+  const freezeOverlay = document.createElement('div');
+  freezeOverlay.className = 'frozen-effect';
+  document.body.appendChild(freezeOverlay);
+
   setTimeout(() => {
     isFrozen = false;
-    document.body.classList.remove('frozen-effect');
+    freezeOverlay.remove();
   }, 5000);
 }
 
-// تأثيرات القنبلة
-function applyBombEffect() {
-  gameOver = true;
-  alert('Game Over! You hit the bomb!');
-  window.location.reload();
+// تأثير القنبلة
+function activateBombEffect() {
+  document.body.style.backgroundColor = 'red';
+  setTimeout(() => (document.body.style.backgroundColor = ''), 200);
 }
 
-// دالة لبدء اللعبة
-function startGame() {
-  gameOver = false;
-  score = 0;
-  timeLeft = 60;
-  gameState.balance = 0;
-  updateUI();
+// عرض إشعار
+function showNotification(message) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.innerText = message;
+  document.body.appendChild(notification);
 
-  // إضافة العناصر العائمة
-  fallingInterval = setInterval(() => {
-    const x = Math.random() * window.innerWidth;
-    const y = 0;
-    const type = Math.random() < 0.1 ? 'bomb' : Math.random() < 0.2 ? 'freeze' : 'normal';
-    createFallingItem(type, x, y);
-  }, 1000);
-
-  gameInterval = setInterval(() => {
-    if (gameOver) {
-      clearInterval(fallingInterval);
-      clearInterval(gameInterval);
-    } else {
-      timeLeft--;
-      if (timeLeft <= 0) {
-        clearInterval(fallingInterval);
-        clearInterval(gameInterval);
-        alert('Game Over! Time is up!');
-      }
-      updateUI();
-    }
-  }, 1000);
+  setTimeout(() => notification.remove(), 3000);
 }
 
-// البدء في اللعبة عند تحميل الصفحة
+// زر بدء اللعبة
+uiElements.startButton.addEventListener('click', startGame);
+
+// زر إعادة المحاولة
+uiElements.retryButton.addEventListener('click', startGame);
+
+// عند تحميل الصفحة
 window.onload = () => {
-  fetchUserDataFromTelegram();
-  startGame();
-};
+  uiElements.startButton.style.display = 'block';
+  uiElements.retryButton.style.display = 'none';
+}; 
