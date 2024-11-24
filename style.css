@@ -108,12 +108,12 @@ body {
 #score::before {
     content: "";
     display: inline-block;
-    width: 25px; /* عرض الصورة */
-    height: 25px; /* ارتفاع الصورة */
+    width: 20px; /* عرض الصورة */
+    height: 20px; /* ارتفاع الصورة */
     background-image: url('i/coinsaw.png'); /* رابط الصورة */
     background-size: contain;
     background-repeat: no-repeat;
-    margin-right: 2px; /* مسافة بين الصورة والنص */
+    margin-right: 4px; /* مسافة بين الصورة والنص */
 }
 
 
