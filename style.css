@@ -69,8 +69,9 @@ body {
     display: flex;
     justify-content: space-between;  /* توزيع العناصر بالتساوي */
     align-items: center;  /* محاذاة العناصر عموديًا */
-    width: 90%;
+    width: 95%;
     height: 40px;
+    border: 2px solid #1a1a1a;
     background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
     top: 10px;
@@ -194,6 +195,7 @@ body {
 }
 
 #game-user {
+    border: 1px solid #1a1a1a;
     width: 70%;
     height: auto;  /* لضبط الارتفاع حسب المحتوى */
     position: fixed;  /* لجعل العنصر ثابتًا في أسفل الشاشة */
