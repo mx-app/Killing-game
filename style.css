@@ -206,7 +206,9 @@ body {
     flex-direction: column;  /* وضع العناصر تحت بعضها */
     align-items: flex-start;  /* محاذاة العناصر إلى اليسار */
     padding: 5px;
+    margin: 5px;
     border-radius: 10px;
+    text-align: center;
 }
 
 #game-user span {
