@@ -197,23 +197,24 @@ body {
 #game-user {
     border: 2px solid #1a1a1a;
     width: 70%;
-    height: auto;  /* لضبط الارتفاع حسب المحتوى */
-    position: fixed;  /* لجعل العنصر ثابتًا في أسفل الشاشة */
+    height: auto;
+    position: fixed;
     bottom: 10px;
     left: 10px;
     background-color: rgba(0, 0, 0, 0.9);
     display: flex;
-    flex-direction: column;  /* وضع العناصر تحت بعضها */
-    align-items: flex-start;  /* محاذاة العناصر إلى اليسار */
+    flex-direction: column;
+    align-items: flex-start;
     padding: 5px;
     margin: 5px;
     border-radius: 10px;
     text-align: center;
+    visibility: hidden;  /* إخفاء العنصر بدون التأثير على مساحته */
 }
 
 #game-user span {
     color: white;
     font-size: 14px;
-    margin-bottom: 5px;  /* لإضافة مسافة بين اليوزر والأيدي */
+    margin-bottom: 5px;
     text-align: center;
 }
