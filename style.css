@@ -98,7 +98,12 @@ body {
     padding: 3px;
     border-radius: 10px;
     margin-top: 55%;
-} 
+    
+    display: flex;
+    align-items: center; /* لضبط محاذاة الصورة والنص عموديًا */
+    justify-content: center; /* لضبط المحاذاة أفقيا */
+    padding-left: 10px; /* لتوفير مسافة داخلية بين الصورة والنص */
+}
 
 #score::before {
     content: "";
@@ -108,7 +113,7 @@ body {
     background-image: url('i/coinsaw.png'); /* رابط الصورة */
     background-size: contain;
     background-repeat: no-repeat;
-    margin-right: 1px; /* مسافة بين الصورة والرقم */
+    margin-right: 2px; /* مسافة بين الصورة والنص */
 }
 
 
