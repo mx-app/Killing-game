@@ -102,7 +102,6 @@ body {
     position: absolute;
     cursor: pointer;
     transition: transform 0.3s ease, opacity 0.5s ease;
-    z-index: 100;
 }
 
 .fallingItem.dead {
@@ -159,10 +158,10 @@ body {
     background-color: #1a1a1a;
     border: none;
     cursor: pointer;
-    font-size: 30px;
+    font-size: 15px;
     color: white;
     z-index: 100;
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
 }
 
