@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -20,23 +20,31 @@
         
         <div id="game-user">
         <!-- بيانات المستخدم -->
-        <div id="userTelegramIdDisplay"></div>
-        <div id="userTelegramNameDisplay"></div>
-      </div>
-        
+        <div class="user-name">
+            <div class="user-name"><span id="userTelegramName">Username</span></div>
+            <div class="user-id"><span id="userTelegramId">123456</span></div>
+        </div>        
+            
         <!-- منطقة اللعبة -->
         <div id="gameArea">
-            <div id="score">Balance: 0</div>
-            <div id="timer">Time: 60</div>
-            <div id="missedCount">Attempts: 10/10</div>
-        </div>
 
+            <div id="game-bar">
+            <div id="score">00</div>
+            <div id="timer">00</div>
+           </div>
+        </div>
+            
+        <div id="gameScore">  
+         <div id="Temporaryscore">Score : 00</div>
+        </div>
+            
         <!-- زر المحاولة مرة أخرى -->
         <div id="retryButton" class="retryButton" style="display:none;">
             Try again
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
+   
 </body>
 </html>
