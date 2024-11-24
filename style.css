@@ -39,7 +39,8 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #000000, #1a1a1a);
+    background-image: url('i/background.jpg');
+    background-size: cover;
     color: white;
     display: flex;
     justify-content: center;
@@ -81,7 +82,7 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url('https://i.ibb.co/yq1mTzz/tloo.jpg');
+    background-image: url('i/coinsaw.png');
     background-size: cover;
     position: absolute;
     cursor: pointer;
