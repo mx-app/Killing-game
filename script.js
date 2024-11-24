@@ -146,9 +146,9 @@ function endGame(isWin) {
     if (isWin) {
         gameState.balance += score; // إضافة السكور إلى الرصيد
         updateGameState();
-        alert('Congratulations! You won!');
+        showNotification(`You won! New Balance: ${gameState.balance}`);
     } else {
-        alert('Game Over! Try again.');
+        showNotification('Game Over! Try again.');
         score = 0; // إعادة تعيين السكور عند الخسارة
     }
 
@@ -158,8 +158,8 @@ function endGame(isWin) {
 // إنشاء عنصر عشوائي
 function createRandomItem() {
     const type = Math.random();
-    if (type < 0.1 && freezeUses > 0) createFreezeItem(); // 10% فرصة للتجميد
-    else if (type < 0.5) createBombItem(); // 50% فرصة للقنبلة
+    if (type < 0.1 && freezeUses > 0) createFreezeItem(); // 10% فرصة للقنبلة
+    else if (type < 0.3) createFreezeItem(); // 20% فرصة للتجميد
     else createFallingItem(); // العنصر الرئيسي
 }
 
@@ -168,7 +168,7 @@ function createFreezeItem() {
     createItem('freezeItem', () => {
         freezeUses--;
         isFrozen = true;
-        setTimeout(() => (isFrozen = false), 3000);
+        setTimeout(() => (isFrozen = false), 5000); // التجميد لمدة 5 ثواني
     });
 }
 
@@ -217,6 +217,18 @@ function createItem(className, onClick) {
             clearInterval(falling);
         }
     });
+}
+
+// عرض إشعار
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.classList.add('notification');
+    notification.innerText = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000); // عرض الإشعار لمدة 3 ثواني
 }
 
 // إعادة تشغيل اللعبة
