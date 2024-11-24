@@ -60,12 +60,26 @@ async function fetchUserDataFromTelegram() {
     }
 }
 
+// تسجيل مستخدم جديد
+async function registerNewUser(userTelegramId, userTelegramName) {
+    const { data, error } = await supabase
+        .from('users')
+        .insert([{ telegram_id: userTelegramId, username: userTelegramName, balance: 0 }]);
+
+    if (error) {
+        console.error('Error registering new user:', error);
+        throw new Error('Failed to register new user');
+    }
+
+    console.log('User registered successfully:', data);
+    gameState = { telegram_id: userTelegramId, username: userTelegramName, balance: 0 };
+    updateUI();
+}
 
 // تحديث واجهة المستخدم
 function updateUI() {
     uiElements.scoreDisplay.innerText = `رصيدك: ${gameState.balance} SP`;
 }
-
 
 // تحديث بيانات المستخدم في قاعدة البيانات بعد الفوز
 async function updateGameState() {
