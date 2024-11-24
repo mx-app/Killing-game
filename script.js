@@ -22,7 +22,6 @@ let freezeUses = 2;
 let isFrozen = false;
 let fallingInterval;
 let gameInterval;
-let itemSpacing = 50;
 let gameState = { balance: 0 };
 
 // جلب بيانات المستخدم من Telegram
@@ -125,7 +124,7 @@ function startGame() {
   // العناصر المتساقطة
   fallingInterval = setInterval(() => {
     if (!gameOver) createRandomItem();
-  }, 500);
+  }, 400); // تقليل الوقت بين العناصر لزيادة السرعة
 }
 
 // إنهاء اللعبة
@@ -137,10 +136,9 @@ function endGame(isWin) {
   if (isWin) {
     gameState.balance += score;
     updateGameState();
-    showNotification(uiElements.purchaseNotification,`You won! New Balance: ${gameState.balance}`);
+    showNotification('You won! New Balance: ' + gameState.balance);
   } else {
-    showNotification(uiElements.purchaseNotification,'Game Over! Try again.');
-    score = 0;
+    showNotification('Game Over! Try again.');
   }
 
   uiElements.retryButton.style.display = 'block';
@@ -151,10 +149,7 @@ function createRandomItem() {
   const random = Math.random();
   if (random < 0.1 && freezeUses > 0) {
     createItem('FreezeItem', () => {
-      freezeUses--;
-      isFrozen = true;
-      showNotification('Frozen!');
-      setTimeout(() => (isFrozen = false), 5000);
+      if (!isFrozen) activateFreezeEffect();
     });
   } else if (random < 0.2) {
     createItem('bombItem', () => {
@@ -162,10 +157,23 @@ function createRandomItem() {
     });
   } else {
     createItem('fallingItem', () => {
-      if (!isFrozen) score++;
+      score++;
       updateUI();
     });
   }
+}
+
+// تفعيل تأثير التجميد
+function activateFreezeEffect() {
+  freezeUses--;
+  isFrozen = true;
+  showNotification('Screen Frozen!');
+  document.body.classList.add('frozen-effect');
+
+  setTimeout(() => {
+    isFrozen = false;
+    document.body.classList.remove('frozen-effect');
+  }, 5000);
 }
 
 // إنشاء عنصر متساقط
@@ -176,12 +184,10 @@ function createItem(className, onClick) {
   item.style.top = '-50px';
   document.body.appendChild(item);
 
-  // حركة العنصر
   let falling = setInterval(() => {
-    if (!gameOver && !isFrozen) {
-      item.style.top = `${item.offsetTop + 5}px`;
+    if (!gameOver) {
+      item.style.top = `${item.offsetTop + (isFrozen ? 0 : 10)}px`;
 
-      // حذف العنصر إذا خرج من الشاشة
       if (item.offsetTop > window.innerHeight - 50) {
         document.body.removeChild(item);
         clearInterval(falling);
@@ -189,7 +195,6 @@ function createItem(className, onClick) {
     }
   }, 30);
 
-  // عند النقر على العنصر
   item.addEventListener('click', () => {
     if (!gameOver) {
       onClick();
@@ -226,3 +231,4 @@ window.onload = async function () {
   await fetchUserDataFromTelegram();
   startGame();
 };
+
