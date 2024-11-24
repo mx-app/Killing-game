@@ -1,9 +1,9 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './i/Scripts/config.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './Scripts/config.js';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// عناصر واجهة المستخدم
+// تعريف عناصر واجهة المستخدم
 const uiElements = {
     userTelegramIdDisplay: document.getElementById('userTelegramId'),
     userTelegramNameDisplay: document.getElementById('userTelegramName'),
@@ -20,7 +20,11 @@ let timeLeft = 60;
 let gameOver = false;
 let gameInterval;
 let fallingInterval;
-let gameState = {};
+
+// تعريف حالة اللعبة (gameState)
+let gameState = {
+    balance: 0,       // رصيد المستخدم
+};
 
 // جلب بيانات المستخدم من Telegram والتحقق في قاعدة البيانات
 async function fetchUserDataFromTelegram() {
@@ -34,16 +38,14 @@ async function fetchUserDataFromTelegram() {
         throw new Error("Failed to fetch Telegram user data.");
     }
 
-    // عرض بيانات المستخدم في واجهة المستخدم
     uiElements.userTelegramIdDisplay.innerText = `ID: ${userTelegramId}`;
     uiElements.userTelegramNameDisplay.innerText = `Username: ${userTelegramName}`;
 
-    // تحقق من المستخدم في قاعدة البيانات، سجل إذا لم يكن موجودًا
     const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('telegram_id', userTelegramId)
-        .maybeSingle(); 
+        .maybeSingle();
 
     if (error) {
         console.error('Error fetching user data:', error);
@@ -51,11 +53,9 @@ async function fetchUserDataFromTelegram() {
     }
 
     if (data) {
-        // المستخدم مسجل مسبقاً
-        gameState = { ...gameState, ...data };
+        gameState = { ...gameState, ...data };  // تحديث gameState باستخدام البيانات الموجودة في Supabase
         updateUI();
     } else {
-        // تسجيل مستخدم جديد
         await registerNewUser(userTelegramId, userTelegramName);
     }
 }
@@ -71,8 +71,7 @@ async function registerNewUser(userTelegramId, userTelegramName) {
         throw new Error('Failed to register new user');
     }
 
-    console.log('User registered successfully:', data);
-    gameState = { telegram_id: userTelegramId, username: userTelegramName, balance: 0 };
+    gameState = { telegram_id: userTelegramId, username: userTelegramName, balance: 0 };  // تحديث gameState
     updateUI();
 }
 
@@ -88,7 +87,7 @@ async function updateGameState() {
     try {
         const { data, error } = await supabase
             .from('users')
-            .update({ balance: gameState.balance }) // تحديث الرصيد في قاعدة البيانات
+            .update({ balance: gameState.balance })  // تحديث الرصيد في قاعدة البيانات
             .eq('telegram_id', userId);
 
         if (error) {
@@ -104,7 +103,6 @@ async function updateGameState() {
 
 // بدء اللعبة
 function startGame() {
-    // إخفاء شاشة التحميل
     uiElements.loadingScreen.style.display = 'none';
 
     gameOver = false;
