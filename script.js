@@ -10,11 +10,10 @@ const uiElements = {
     userTelegramIdDisplay: document.getElementById('userTelegramId'),
     userTelegramNameDisplay: document.getElementById('userTelegramName'),
     scoreDisplay: document.getElementById('score'),
-    balanceDisplay: document.getElementById('balance'),
     missedCountDisplay: document.getElementById('missedCount'),
     timerDisplay: document.getElementById('timer'),
     retryButton: document.getElementById('retryButton'),
-    gameArea: document.getElementById('gameArea'),
+    loadingScreen: document.getElementById('loadingScreen'),
 };
 
 // متغيرات اللعبة
@@ -22,7 +21,7 @@ let score = 0;
 let missedCount = 0;
 let timeLeft = 60;
 let gameOver = false;
-let freezeUses = 0; // عدد مرات استخدام التجميد
+let freezeUses = 2; // عدد مرات استخدام التجميد
 let isFrozen = false; // حالة التجميد
 let gameInterval;
 let fallingInterval;
@@ -92,58 +91,15 @@ async function registerNewUser(userTelegramId, userTelegramName) {
 
 // تحديث واجهة المستخدم
 function updateUI() {
-    uiElements.scoreDisplay.innerText = `Score: ${score}`;
-    uiElements.balanceDisplay.innerText = `Balance: ${gameState.balance}`;
+    uiElements.scoreDisplay.innerText = `Balance: ${gameState.balance}`;
     uiElements.missedCountDisplay.innerText = `Missed: ${missedCount}/10`;
     uiElements.timerDisplay.innerText = `Time: ${timeLeft}`;
 }
 
-// بدء اللعبة
-function startGame() {
-    gameOver = false;
-    score = 0;
-    missedCount = 0;
-    timeLeft = 60;
-    freezeUses = 2;
-    isFrozen = false;
-    updateUI();
-
-    // عداد الوقت
-    gameInterval = setInterval(() => {
-        if (!gameOver) {
-            timeLeft--;
-            updateUI();
-            if (timeLeft <= 0) endGame(true);
-        }
-    }, 1000);
-
-    // إنشاء العناصر المتساقطة
-    fallingInterval = setInterval(() => {
-        if (!gameOver) createRandomItem();
-    }, 1000);
-}
-
-// إنهاء اللعبة
-function endGame(isWin) {
-    gameOver = true;
-    clearInterval(gameInterval);
-    clearInterval(fallingInterval);
-
-    if (isWin) {
-        gameState.balance += score; // إضافة الرصيد المؤقت إلى الرصيد الحقيقي
-        updateGameState();
-        displayEffect('win');
-    } else {
-        displayEffect('lose');
-    }
-
-    uiElements.retryButton.style.display = 'block';
-}
-
-// تحديث بيانات المستخدم بعد الفوز
+// تحديث بيانات المستخدم في قاعدة البيانات
 async function updateGameState() {
     try {
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from('users')
             .update({ balance: gameState.balance })
             .eq('telegram_id', gameState.telegram_id);
@@ -156,7 +112,77 @@ async function updateGameState() {
     }
 }
 
-// إنشاء العناصر
+//تحديث القاعده في الوقت الفعلي 
+async function updateGameStateInDatabase(updatedData, supabase, uiElements) {
+    const userId = uiElements.userTelegramIdDisplay.innerText;
+
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .update(updatedData) // البيانات الجديدة
+            .eq('telegram_id', userId); // شرط التحديث
+
+        if (error) {
+            console.error('Error updating game state in Supabase:', error);
+            return false;
+        }
+
+        console.log('Game state updated successfully in Supabase:', data);
+        return true;
+    } catch (err) {
+        console.error('Unexpected error while updating game state:', err);
+        return false;
+    }
+}
+
+
+
+// بدء اللعبة
+function startGame() {
+    gameOver = false;
+    score = 0;
+    missedCount = 0;
+    timeLeft = 60;
+    freezeUses = 2;
+    updateUI();
+
+    // عداد الوقت
+    gameInterval = setInterval(() => {
+        if (!gameOver) {
+            timeLeft--;
+            uiElements.timerDisplay.innerText = `Time: ${timeLeft}`;
+            if (timeLeft <= 0) {
+                endGame(true); // فوز
+            }
+        }
+    }, 1000);
+
+    // العناصر المتساقطة
+    fallingInterval = setInterval(() => {
+        if (!gameOver) {
+            createRandomItem();
+        }
+    }, 1000);
+}
+
+// إنهاء اللعبة
+function endGame(isWin) {
+    gameOver = true;
+    clearInterval(gameInterval);
+    clearInterval(fallingInterval);
+
+    if (isWin) {
+        gameState.balance += score;
+        updateGameState();
+        alert('Congratulations! You won!');
+    } else {
+        alert('Game Over! Try again.');
+    }
+
+    uiElements.retryButton.style.display = 'block';
+}
+
+// إنشاء عنصر عشوائي
 function createRandomItem() {
     const type = Math.random();
     if (type < 0.1 && freezeUses > 0) createFreezeItem();
@@ -164,25 +190,23 @@ function createRandomItem() {
     else createFallingItem();
 }
 
-// إنشاء عنصر التجميد
+// إنشاء عنصر تجميد
 function createFreezeItem() {
     createItem('freezeItem', () => {
         freezeUses--;
         isFrozen = true;
-        displayEffect('freeze');
-        setTimeout(() => (isFrozen = false), 5000);
+        setTimeout(() => (isFrozen = false), 3000);
     });
 }
 
-// إنشاء عنصر القنبلة
+// إنشاء عنصر قنبلة
 function createBombItem() {
     createItem('bombItem', () => {
-        missedCount--; // تفادي القنبلة لا يحسب
-        updateUI();
+        endGame(false);
     });
 }
 
-// إنشاء عنصر العملة
+// إنشاء عنصر عادي
 function createFallingItem() {
     createItem('fallingItem', () => {
         if (!isFrozen) score++;
@@ -190,22 +214,22 @@ function createFallingItem() {
     });
 }
 
-// إنشاء عنصر في اللعبة
+// إنشاء عنصر في الواجهة
 function createItem(className, onClick) {
     const item = document.createElement('div');
     item.classList.add(className);
-    item.style.left = `${Math.random() * (uiElements.gameArea.offsetWidth - 50)}px`;
-    item.style.top = '0px';
-    uiElements.gameArea.appendChild(item);
+    item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+    item.style.top = '-50px';
+    document.body.appendChild(item);
 
-    let fallingInterval = setInterval(() => {
+    let falling = setInterval(() => {
         if (!gameOver && !isFrozen) {
             item.style.top = `${item.offsetTop + 5}px`;
 
-            if (item.offsetTop > uiElements.gameArea.offsetHeight - 50) {
-                uiElements.gameArea.removeChild(item);
-                clearInterval(fallingInterval);
-                if (className === 'fallingItem') missedCount++;
+            if (item.offsetTop > window.innerHeight - 50) {
+                document.body.removeChild(item);
+                clearInterval(falling);
+                missedCount++;
                 updateUI();
                 if (missedCount >= 10) endGame(false);
             }
@@ -215,21 +239,10 @@ function createItem(className, onClick) {
     item.addEventListener('click', () => {
         if (!gameOver) {
             onClick();
-            uiElements.gameArea.removeChild(item);
-            clearInterval(fallingInterval);
+            document.body.removeChild(item);
+            clearInterval(falling);
         }
     });
-}
-
-// عرض التأثيرات
-function displayEffect(effectType) {
-    const effect = document.createElement('div');
-    effect.className = `effect-${effectType}`;
-    uiElements.gameArea.appendChild(effect);
-
-    setTimeout(() => {
-        uiElements.gameArea.removeChild(effect);
-    }, 1000);
 }
 
 // إعادة تشغيل اللعبة
@@ -238,10 +251,10 @@ uiElements.retryButton.addEventListener('click', () => {
     startGame();
 });
 
-// بدء اللعبة عند تحميل الصفحة
+// بدء اللعبة عند التحميل
 window.onload = async function () {
+    uiElements.retryButton.style.display = 'none';
     await fetchUserDataFromTelegram();
     startGame();
 };
-
 
