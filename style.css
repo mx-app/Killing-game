@@ -81,20 +81,21 @@ body {
 }
 
 #score {
-    top: 10px;
-    left: 20px;
+    top: 15px;
+    left: 15px;
     font-weight: bold;
 }
 
 #timer {
-    top: 40px;
-    left: 20px;
+    top: 15px;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-weight: bold;
 }
 
 #missedCount {
-    top: 60px;
-    left: 20px;
+    top: 15px;
+    right: 15px;
     font-weight: bold; /* استخدام font-weight بدلاً من font-width */
 }
 
