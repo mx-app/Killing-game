@@ -1,6 +1,6 @@
 // استيراد مكتبة Supabase لإنشاء الاتصال بقاعدة البيانات
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './Scripts/config.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './i/Scripts/config.js';
 
 // إنشاء عميل Supabase
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -37,47 +37,53 @@ async function fetchUserDataFromTelegram() {
     const userTelegramName = telegramApp.initDataUnsafe.user?.username;
 
     if (!userTelegramId || !userTelegramName) {
-        throw new Error("Failed to fetch Telegram user data.");
+        console.error("Failed to fetch Telegram user data.");
+        return;
     }
 
     uiElements.userTelegramIdDisplay.innerText = `ID: ${userTelegramId}`;
     uiElements.userTelegramNameDisplay.innerText = `Username: ${userTelegramName}`;
 
-    const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('telegram_id', userTelegramId)
-        .maybeSingle();
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('telegram_id', userTelegramId)
+            .maybeSingle();
 
-    if (error) {
-        console.error('Error fetching user data:', error);
-        throw new Error('Failed to fetch user data');
-    }
+        if (error) {
+            console.error('Error fetching user data from Supabase:', error);
+            return;
+        }
 
-    if (data) {
-        gameState = { ...gameState, ...data };  // تحديث gameState باستخدام البيانات الموجودة في Supabase
-        updateUI();
-    } else {
-        await registerNewUser(userTelegramId, userTelegramName);
+        if (data) {
+            gameState = { ...gameState, ...data };  // تحديث gameState باستخدام البيانات الموجودة في Supabase
+            updateUI();
+        } else {
+            await registerNewUser(userTelegramId, userTelegramName);
+        }
+    } catch (err) {
+        console.error('Error while fetching user data:', err);
     }
 }
 
-window.Telegram.WebApp.setHeaderColor('#000000');
-window.Telegram.WebApp.setBackgroundColor('#000000');
-
 // تسجيل مستخدم جديد
 async function registerNewUser(userTelegramId, userTelegramName) {
-    const { data, error } = await supabase
-        .from('users')
-        .insert([{ telegram_id: userTelegramId, username: userTelegramName, balance: 0 }]);
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .insert([{ telegram_id: userTelegramId, username: userTelegramName, balance: 0 }]);
 
-    if (error) {
-        console.error('Error registering new user:', error);
-        throw new Error('Failed to register new user');
+        if (error) {
+            console.error('Error registering new user:', error);
+            return;
+        }
+
+        gameState = { telegram_id: userTelegramId, username: userTelegramName, balance: 0 };  // تحديث gameState
+        updateUI();
+    } catch (err) {
+        console.error('Unexpected error while registering new user:', err);
     }
-
-    gameState = { telegram_id: userTelegramId, username: userTelegramName, balance: 0 };  // تحديث gameState
-    updateUI();
 }
 
 // تحديث واجهة المستخدم
@@ -146,7 +152,7 @@ function createFallingItem() {
     document.body.appendChild(fallingItem);
 
     let fallingSpeed = 2;
-    let fallingInterval = setInterval(() => {
+    let fallingItemInterval = setInterval(() => {
         if (!gameOver) {
             fallingItem.style.top = `${fallingItem.offsetTop + fallingSpeed}px`;
 
@@ -157,7 +163,7 @@ function createFallingItem() {
 
                 if (missedCount >= 10) {
                     gameOver = true;
-                    clearInterval(fallingInterval);
+                    clearInterval(fallingItemInterval);
                     showRetryButton();
                 }
             }
@@ -213,6 +219,10 @@ window.onload = async function () {
         await fetchUserDataFromTelegram();
         startGame();
     } catch (err) {
-        console.error(err.message);
+        console.error('Error during game initialization:', err);
     }
 };
+
+// تطبيق إعدادات الألوان
+window.Telegram.WebApp.setHeaderColor('#000000');
+window.Telegram.WebApp.setBackgroundColor('#000000');
