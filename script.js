@@ -133,7 +133,7 @@ function startGame() {
         if (!gameOver) {
             createRandomItem();
         }
-    }, 1000); // زيادة الوقت بين كل عنصر وآخر للحصول على سلاسة أكثر
+    }, 100); // زيادة الوقت بين كل عنصر وآخر للحصول على سلاسة أكثر
 }
 
 // إنهاء اللعبة
@@ -195,7 +195,7 @@ function createItem(className, onClick) {
     item.classList.add(className);
     item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
     item.style.top = '-50px';
-    item.style.transition = 'top 0.5s ease-in-out'; // سلاسة في الحركة
+    item.style.transition = 'top 0.1s ease-in-out'; // سلاسة في الحركة
     document.body.appendChild(item);
 
     let falling = setInterval(() => {
