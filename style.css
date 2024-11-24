@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap');
 
+
+
 /* إضافة مكتبة الخطوط */
 @import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500&display=swap");
 
@@ -125,6 +127,13 @@
   }
 }
 
+
+
+
+
+
+
+/*  بدايه */
 @media only screen and (max-width: 768px) {
   .container {
     flex-direction: column;
