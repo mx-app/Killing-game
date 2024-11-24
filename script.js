@@ -1,22 +1,18 @@
-// منع القائمة السياقية
-        document.addEventListener("contextmenu", function(event) {
-            event.preventDefault();
-        });
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './i/Scripts/config.js';
 
-        // منع الضغط المطوّل على العناصر
-        document.querySelectorAll("img, p").forEach(element => {
-            element.addEventListener("mousedown", e => e.preventDefault());
-            element.addEventListener("touchstart", e => e.preventDefault());
-        });
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-
-
-
-const scoreDisplay = document.getElementById('score');
-const missedCountDisplay = document.getElementById('missedCount');
-const timerDisplay = document.getElementById('timer');
-const retryButton = document.getElementById('retryButton');
-const loadingScreen = document.getElementById('loadingScreen');
+// عناصر واجهة المستخدم
+const uiElements = {
+    userTelegramIdDisplay: document.getElementById('userTelegramIdDisplay'),
+    userTelegramNameDisplay: document.getElementById('userTelegramNameDisplay'),
+    scoreDisplay: document.getElementById('score'),
+    missedCountDisplay: document.getElementById('missedCount'),
+    timerDisplay: document.getElementById('timer'),
+    retryButton: document.getElementById('retryButton'),
+    loadingScreen: document.getElementById('loadingScreen'),
+};
 
 let score = 0;
 let missedCount = 0;
@@ -24,22 +20,144 @@ let timeLeft = 60;
 let gameOver = false;
 let gameInterval;
 let fallingInterval;
+let gameState = {};
 
+// جلب بيانات المستخدم من Telegram والتحقق في قاعدة البيانات
+async function fetchUserDataFromTelegram() {
+    const telegramApp = window.Telegram.WebApp;
+    telegramApp.ready();
+
+    const userTelegramId = telegramApp.initDataUnsafe.user?.id;
+    const userTelegramName = telegramApp.initDataUnsafe.user?.username;
+
+    if (!userTelegramId || !userTelegramName) {
+        throw new Error("Failed to fetch Telegram user data.");
+    }
+
+    // عرض بيانات المستخدم في واجهة المستخدم
+    uiElements.userTelegramIdDisplay.innerText = `ID: ${userTelegramId}`;
+    uiElements.userTelegramNameDisplay.innerText = `Username: ${userTelegramName}`;
+
+    // تحقق من المستخدم في قاعدة البيانات، سجل إذا لم يكن موجودًا
+    const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('telegram_id', userTelegramId)
+        .maybeSingle(); 
+
+    if (error) {
+        console.error('Error fetching user data:', error);
+        throw new Error('Failed to fetch user data');
+    }
+
+    if (data) {
+        // المستخدم مسجل مسبقاً
+        gameState = { ...gameState, ...data };
+        updateUI();
+    } else {
+        // تسجيل مستخدم جديد
+        await registerNewUser(userTelegramId, userTelegramName);
+    }
+}
+
+// تسجيل مستخدم جديد في قاعدة البيانات
+async function registerNewUser(telegramId, username) {
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .insert([
+                {
+                    telegram_id: telegramId,
+                    username: username,
+                    balance: 0, // الرصيد الافتراضي
+                }
+            ]);
+
+        if (error) {
+            console.error('Error registering new user:', error.message);
+            return;
+        }
+
+        console.log('New user registered successfully:', data);
+        // بعد التسجيل، يمكن تحميل حالة اللعبة أو إضافة المزيد من البيانات
+        gameState = { ...gameState, ...data[0] };
+        updateUI();
+    } catch (err) {
+        console.error('Unexpected error during registration:', err);
+    }
+}
+
+// تحديث واجهة المستخدم
+function updateUI() {
+    uiElements.scoreDisplay.innerText = `رصيدك: ${gameState.balance} SP`;
+}
+
+// تحميل حالة اللعبة من قاعدة البيانات
+async function loadGameState() {
+    const userId = uiElements.userTelegramIdDisplay.innerText.split(":")[1].trim();
+
+    try {
+        console.log('Loading game state from Supabase...');
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('telegram_id', userId)
+            .single();
+
+        if (error) {
+            console.error('Error loading game state from Supabase:', error.message);
+            return;
+        }
+
+        if (data) {
+            console.log('Loaded game state:', data); // عرض البيانات المحملة
+            gameState = { ...gameState, ...data };
+            updateUI(); // تحديث واجهة المستخدم بحالة اللعبة
+        } else {
+            console.warn('No game state found for this user.');
+        }
+    } catch (err) {
+        console.error('Unexpected error:', err);
+    }
+}
+
+// تحديث بيانات المستخدم في قاعدة البيانات بعد الفوز
+async function updateGameState() {
+    const userId = uiElements.userTelegramIdDisplay.innerText.split(":")[1].trim();
+
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .update({ balance: gameState.balance }) // تحديث الرصيد في قاعدة البيانات
+            .eq('telegram_id', userId);
+
+        if (error) {
+            console.error('Error updating game state in Supabase:', error.message);
+            return;
+        }
+
+        console.log('Game state updated successfully:', data);
+    } catch (err) {
+        console.error('Unexpected error while updating game state:', err);
+    }
+}
+
+// بدء اللعبة
 function startGame() {
     // إخفاء شاشة التحميل
-    loadingScreen.style.display = 'none';
+    uiElements.loadingScreen.style.display = 'none';
 
     gameOver = false;
     score = 0;
     missedCount = 0;
     timeLeft = 60;
-    updateScore();
-    updateMissedCount();
+    updateUI();
+    uiElements.retryButton.style.display = 'none';
 
     gameInterval = setInterval(() => {
         if (!gameOver) {
             timeLeft--;
-            timerDisplay.textContent = `Time : ${timeLeft}`;
+            uiElements.timerDisplay.innerText = `الوقت المتبقي: ${timeLeft}`;
             if (timeLeft <= 0) {
                 gameOver = true;
                 clearInterval(gameInterval);
@@ -56,6 +174,7 @@ function startGame() {
     }, 1000);
 }
 
+// إنشاء العناصر المتساقطة
 function createFallingItem() {
     const fallingItem = document.createElement('div');
     fallingItem.classList.add('fallingItem');
@@ -94,34 +213,44 @@ function createFallingItem() {
     });
 }
 
+// تحديث الرصيد
 function updateScore() {
-    scoreDisplay.textContent = `Balance : ${score} SP`;
+    gameState.balance = score;
+    uiElements.scoreDisplay.innerText = `رصيدك: ${gameState.balance} SP`;
 }
 
+// تحديث محاولات الخسارة
 function updateMissedCount() {
-    missedCountDisplay.textContent = `Attempts: ${missedCount}/10`;
+    uiElements.missedCountDisplay.innerText = `محاولات: ${missedCount}/10`;
 }
 
+// إظهار زر إعادة المحاولة
 function showRetryButton() {
-    retryButton.style.display = 'block';
-    document.querySelectorAll('.fallingItem').forEach(item => item.remove()); // مسح العناصر المتبقية
+    uiElements.retryButton.style.display = 'block';
 }
 
-retryButton.addEventListener('click', () => {
+uiElements.retryButton.addEventListener('click', () => {
     resetGame();
 });
 
+// إعادة تعيين اللعبة
 function resetGame() {
     score = 0;
     missedCount = 0;
     timeLeft = 60;
     updateScore();
     updateMissedCount();
-    retryButton.style.display = 'none';
+    uiElements.retryButton.style.display = 'none';
     startGame();
 }
 
-// بدء اللعبة مع إضافة شاشة التحميل
-setTimeout(() => {
-    startGame();
-}, 3000);
+// بدء اللعبة بعد 3 ثواني
+window.onload = async function () {
+    try {
+        await fetchUserDataFromTelegram();
+        await loadGameState();
+        startGame();
+    } catch (err) {
+        console.error(err.message);
+    }
+};
