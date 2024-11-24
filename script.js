@@ -90,7 +90,7 @@ async function registerNewUser(userTelegramId, userTelegramName) {
 
 // تحديث واجهة المستخدم
 function updateUI() {
-    uiElements.scoreDisplay.innerText = `Clicks: ${score}`;
+    uiElements.scoreDisplay.innerText = ` ${score} `;
     uiElements.timerDisplay.innerText = `00 : ${timeLeft}`;
 }
 
