@@ -83,23 +83,9 @@ body {
     z-index: 1000;
 }
 
-#game-bar div {
-    flex: 1;  /* تخصيص مساحة متساوية لكل عنصر */
-    display: flex;
-    justify-content: center;  /* محاذاة المحتوى داخل كل div */
-}
-
-#game-bar div:first-child {
-    justify-content: flex-start;  /* محاذاة العنصر الأول إلى اليسار */
-}
-
-#game-bar div:last-child {
-    justify-content: flex-end;  /* محاذاة العنصر الأخير إلى اليمين */
-}
-
 #score {
     width: 20%;
-    height: 45px;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
     font-size: 14px;
@@ -111,7 +97,7 @@ body {
 
 #timer {
     width: 20%;
-    height: 45px;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
     font-size: 14px;
@@ -314,6 +300,6 @@ body {
     font-size: 14px;
     color: white;
     font-weight: bold;
-    padding: 8px;
+    padding: 1px;
     border-radius: 10px;
 } 
