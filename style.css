@@ -243,3 +243,39 @@ body {
     cursor: pointer;
 } 
 
+.effect {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    animation: fadeOut 1s ease-in-out;
+}
+
+.effect.win {
+    background: rgba(0, 255, 0, 0.7);
+    content: "You Win!";
+}
+
+.effect.lose {
+    background: rgba(255, 0, 0, 0.7);
+    content: "Game Over!";
+}
+
+.effect.freeze {
+    background: rgba(0, 0, 255, 0.7);
+    content: "Frozen!";
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+} 
+
