@@ -71,11 +71,14 @@ body {
     align-items: center;  /* محاذاة العناصر عموديًا */
     width: 85%;
     height: 30px;
+    background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
     top: 10px;
     left: 50%;
+    margin: 5px;
     transform: translateX(-50%);  /* محاذاة العنصر في المنتصف أفقيًا */
     font-weight: bold;
+    white-space: nowrap;  
 }
 
 #game-bar div {
