@@ -99,6 +99,17 @@ body {
     border-radius: 10px;
     margin-top: 55%;
 } 
+#score::before {
+    content: "";
+    display: inline-block;
+    width: 30px; /* عرض الصورة */
+    height: 30px; /* ارتفاع الصورة */
+    background-image: url('i/coinsaw.png'); /* رابط الصورة */
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 5px; /* مسافة بين الصورة والرقم */
+}
+
 
 #timer {
     width: 35%;
