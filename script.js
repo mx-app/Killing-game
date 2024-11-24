@@ -88,7 +88,7 @@ async function registerNewUser(userTelegramId, userTelegramName) {
 
 // تحديث واجهة المستخدم
 function updateUI() {
-    uiElements.scoreDisplay.innerText = `رصيدك: ${gameState.balance} SP`;
+    uiElements.scoreDisplay.innerText = `balance : ${gameState.balance} sp`;
 }
 
 // تحديث بيانات المستخدم في قاعدة البيانات بعد الفوز
@@ -126,7 +126,7 @@ function startGame() {
     gameInterval = setInterval(() => {
         if (!gameOver) {
             timeLeft--;
-            uiElements.timerDisplay.innerText = `الوقت المتبقي: ${timeLeft}`;
+            uiElements.timerDisplay.innerText = `Time : ${timeLeft}`;
             if (timeLeft <= 0) {
                 gameOver = true;
                 clearInterval(gameInterval);
@@ -185,12 +185,12 @@ function createFallingItem() {
 // تحديث الرصيد
 function updateScore() {
     gameState.balance = score;
-    uiElements.scoreDisplay.innerText = `رصيدك: ${gameState.balance} SP`;
+    uiElements.scoreDisplay.innerText = `balance : ${gameState.balance} sp`;
 }
 
 // تحديث محاولات الخسارة
 function updateMissedCount() {
-    uiElements.missedCountDisplay.innerText = `محاولات: ${missedCount}/10`;
+    uiElements.missedCountDisplay.innerText = ` loss : ${missedCount}/10`;
 }
 
 // إظهار زر إعادة المحاولة
