@@ -1,4 +1,3 @@
-// استيراد مكتبة Supabase لإنشاء الاتصال بقاعدة البيانات
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './i/Scripts/config.js';
 
@@ -10,7 +9,6 @@ const uiElements = {
     userTelegramIdDisplay: document.getElementById('userTelegramId'),
     userTelegramNameDisplay: document.getElementById('userTelegramName'),
     scoreDisplay: document.getElementById('score'),
-    missedCountDisplay: document.getElementById('missedCount'),
     timerDisplay: document.getElementById('timer'),
     retryButton: document.getElementById('retryButton'),
     loadingScreen: document.getElementById('loadingScreen'),
@@ -24,6 +22,7 @@ let freezeUses = 2; // عدد مرات استخدام التجميد
 let isFrozen = false; // حالة التجميد
 let gameInterval;
 let fallingInterval;
+let itemSpacing = 10; // المسافة بين العناصر المتساقطة
 
 // تعريف حالة اللعبة
 let gameState = {
@@ -134,7 +133,7 @@ function startGame() {
         if (!gameOver) {
             createRandomItem();
         }
-    }, 100); // إسقاط العناصر بسرعة أكبر
+    }, 200); // زيادة الوقت بين كل عنصر وآخر للحصول على سلاسة أكثر
 }
 
 // إنهاء اللعبة
@@ -158,7 +157,7 @@ function endGame(isWin) {
 // إنشاء عنصر عشوائي
 function createRandomItem() {
     const type = Math.random();
-    if (type < 0.1 && freezeUses > 0) createFreezeItem(); // 10% فرصة للقنبلة
+    if (type < 0.1 && freezeUses > 0) createFreezeItem(); // 10% فرصة للتجميد
     else if (type < 0.3) createFreezeItem(); // 20% فرصة للتجميد
     else createFallingItem(); // العنصر الرئيسي
 }
@@ -196,6 +195,7 @@ function createItem(className, onClick) {
     item.classList.add(className);
     item.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
     item.style.top = '-50px';
+    item.style.transition = 'top 0.2s ease-in-out'; // سلاسة في الحركة
     document.body.appendChild(item);
 
     let falling = setInterval(() => {
@@ -213,8 +213,11 @@ function createItem(className, onClick) {
     item.addEventListener('click', () => {
         if (!gameOver) {
             onClick();
-            document.body.removeChild(item);
-            clearInterval(falling);
+            item.style.transform = 'scale(0.8)'; // تصغير العنصر عند النقر عليه
+            setTimeout(() => {
+                document.body.removeChild(item);
+                clearInterval(falling);
+            }, 200); // حذف العنصر بعد التأثير
         }
     });
 }
