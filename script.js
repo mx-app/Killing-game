@@ -1,4 +1,3 @@
-// استيراد مكتبة Supabase لإنشاء الاتصال بقاعدة البيانات
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './i/Scripts/config.js';
 
@@ -14,6 +13,8 @@ const uiElements = {
     timerDisplay: document.getElementById('timer'),
     retryButton: document.getElementById('retryButton'),
     loadingScreen: document.getElementById('loadingScreen'),
+    gameOverlay: document.getElementById('gameOverlay'),  // عنصر التجميد
+    freezeOverlay: document.getElementById('freezeOverlay'),  // طبقة التجميد
 };
 
 let score = 0;
@@ -22,6 +23,9 @@ let timeLeft = 60;
 let gameOver = false;
 let gameInterval;
 let fallingInterval;
+let freezeMode = false;  // للتجميد
+let bombActivated = false;  // للتأكد من القنبلة
+let freezeUsed = false;  // للتحقق من استخدام التجميد في اللعبة
 
 // تعريف حالة اللعبة (gameState)
 let gameState = {
@@ -120,6 +124,7 @@ function startGame() {
     score = 0;
     missedCount = 0;
     timeLeft = 60;
+    freezeUsed = false;
     updateUI();
     uiElements.retryButton.style.display = 'none';
 
@@ -137,7 +142,7 @@ function startGame() {
     }, 1000);
 
     fallingInterval = setInterval(() => {
-        if (!gameOver) {
+        if (!gameOver && !freezeMode) {
             createFallingItem();
         }
     }, 1000);
@@ -153,7 +158,7 @@ function createFallingItem() {
 
     let fallingSpeed = 2;
     let fallingItemInterval = setInterval(() => {
-        if (!gameOver) {
+        if (!gameOver && !freezeMode) {
             fallingItem.style.top = `${fallingItem.offsetTop + fallingSpeed}px`;
 
             if (fallingItem.offsetTop > window.innerHeight - 60) {
@@ -180,6 +185,23 @@ function createFallingItem() {
             updateScore();
         }
     });
+
+    // إضافة القنابل
+    if (Math.random() < 0.1 && !bombActivated) { // 10% احتمال ظهور القنبلة
+        const bomb = document.createElement('div');
+        bomb.classList.add('bomb');
+        bomb.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+        bomb.style.top = `-50px`;
+        bomb.style.backgroundImage = 'url("bomb_image.png")'; // تعيين صورة القنبلة
+        document.body.appendChild(bomb);
+
+        bomb.addEventListener('click', () => {
+            gameOver = true;
+            alert("Boom! You hit the bomb! Game Over!");
+            clearInterval(fallingItemInterval);
+            showRetryButton();
+        });
+    }
 }
 
 // تحديث الرصيد
@@ -226,3 +248,26 @@ window.onload = async function () {
 // تطبيق إعدادات الألوان
 window.Telegram.WebApp.setHeaderColor('#000000');
 window.Telegram.WebApp.setBackgroundColor('#000000');
+
+// تفعيل زر الرجوع
+window.Telegram.WebApp.BackButton.onClick(function() {
+    window.Telegram.WebApp.close();
+});
+
+// تأثيرات التجميد
+function freezeScreen() {
+    freezeMode = true;
+    uiElements.freezeOverlay.style.display = 'block';  // عرض طبقة التجميد
+    setTimeout(() => {
+        freezeMode = false;
+        uiElements.freezeOverlay.style.display = 'none';  // إخفاء طبقة التجميد
+    }, 5000); // التجميد لمدة 5 ثواني
+}
+
+// تفعيل التجميد عند الفوز
+function triggerFreezeOnWin() {
+    if (!gameOver && !freezeMode && !freezeUsed) {
+        freezeUsed = true;
+        freezeScreen();
+    }
+}
