@@ -74,7 +74,7 @@ body {
     border: 2px solid #1a1a1a;
     background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
-    top: 2px;
+    top: 10px;
     /*transform: translateX(-50%);  *//* محاذاة العنصر في المنتصف أفقيًا */
     font-weight: bold;
     white-space: nowrap;
@@ -209,7 +209,7 @@ body {
     margin: 5px;
     border-radius: 10px;
     text-align: center;
-    visibility: hidden;  /* إخفاء العنصر بدون التأثير على مساحته */
+    /*visibility: hidden;  *//* إخفاء العنصر بدون التأثير على مساحته */
 }
 
 #game-user span {
