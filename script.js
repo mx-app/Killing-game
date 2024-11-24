@@ -5,8 +5,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // عناصر واجهة المستخدم
 const uiElements = {
-    userTelegramIdDisplay: document.getElementById('userTelegramIdDisplay'),
-    userTelegramNameDisplay: document.getElementById('userTelegramNameDisplay'),
+    userTelegramIdDisplay: document.getElementById('userTelegramId'),
+    userTelegramNameDisplay: document.getElementById('userTelegramName'),
     scoreDisplay: document.getElementById('score'),
     missedCountDisplay: document.getElementById('missedCount'),
     timerDisplay: document.getElementById('timer'),
@@ -60,66 +60,12 @@ async function fetchUserDataFromTelegram() {
     }
 }
 
-// تسجيل مستخدم جديد في قاعدة البيانات
-async function registerNewUser(telegramId, username) {
-    try {
-        const { data, error } = await supabase
-            .from('users')
-            .insert([
-                {
-                    telegram_id: telegramId,
-                    username: username,
-                    balance: 0, // الرصيد الافتراضي
-                }
-            ]);
-
-        if (error) {
-            console.error('Error registering new user:', error.message);
-            return;
-        }
-
-        console.log('New user registered successfully:', data);
-        // بعد التسجيل، يمكن تحميل حالة اللعبة أو إضافة المزيد من البيانات
-        gameState = { ...gameState, ...data[0] };
-        updateUI();
-    } catch (err) {
-        console.error('Unexpected error during registration:', err);
-    }
-}
 
 // تحديث واجهة المستخدم
 function updateUI() {
     uiElements.scoreDisplay.innerText = `رصيدك: ${gameState.balance} SP`;
 }
 
-// تحميل حالة اللعبة من قاعدة البيانات
-async function loadGameState() {
-    const userId = uiElements.userTelegramIdDisplay.innerText.split(":")[1].trim();
-
-    try {
-        console.log('Loading game state from Supabase...');
-        const { data, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('telegram_id', userId)
-            .single();
-
-        if (error) {
-            console.error('Error loading game state from Supabase:', error.message);
-            return;
-        }
-
-        if (data) {
-            console.log('Loaded game state:', data); // عرض البيانات المحملة
-            gameState = { ...gameState, ...data };
-            updateUI(); // تحديث واجهة المستخدم بحالة اللعبة
-        } else {
-            console.warn('No game state found for this user.');
-        }
-    } catch (err) {
-        console.error('Unexpected error:', err);
-    }
-}
 
 // تحديث بيانات المستخدم في قاعدة البيانات بعد الفوز
 async function updateGameState() {
@@ -248,7 +194,6 @@ function resetGame() {
 window.onload = async function () {
     try {
         await fetchUserDataFromTelegram();
-        await loadGameState();
         startGame();
     } catch (err) {
         console.error(err.message);
