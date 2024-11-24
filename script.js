@@ -162,7 +162,7 @@ function startGame() {
         if (!gameOver) {
             createRandomItem();
         }
-    }, 1000);
+    }, 100000);
 }
 
 // إنهاء اللعبة
