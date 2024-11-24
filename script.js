@@ -1,6 +1,8 @@
+// استيراد مكتبة Supabase لإنشاء الاتصال بقاعدة البيانات
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './Scripts/config.js';
 
+// إنشاء عميل Supabase
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // تعريف عناصر واجهة المستخدم
@@ -24,6 +26,20 @@ let fallingInterval;
 // تعريف حالة اللعبة (gameState)
 let gameState = {
     balance: 0,       // رصيد المستخدم
+    energy: 500,      // الطاقة المتاحة
+    maxEnergy: 500,   // الحد الأقصى للطاقة
+    clickMultiplier: 1, // مضاعف النقرة
+    boostLevel: 1,    // مستوى التعزيز
+    coinBoostLevel: 1, // مستوى تعزيز العملات
+    currentLevel: 1,  // المستوى الحالي
+    achievedLevels: [], // المستويات التي تم الوصول إليها
+    friends: 0,       // عدد الأصدقاء
+    fillEnergyCount: 0, // عدد محاولات ملء الطاقة
+    lastFillTime: Date.now(), // وقت آخر ملء للطاقة
+    invites: [],      // قائمة الدعوات
+    claimedRewards: { levels: [] }, // المكافآت المحققة
+    tasksProgress: [], // تقدم المهام
+    completedTasks: [], // المهام المكتملة
 };
 
 // جلب بيانات المستخدم من Telegram والتحقق في قاعدة البيانات
