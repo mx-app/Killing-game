@@ -74,7 +74,7 @@ body {
     border: 2px solid #1a1a1a;
     background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
-    top: 10px;
+    top: 2px;
     /*transform: translateX(-50%);  *//* محاذاة العنصر في المنتصف أفقيًا */
     font-weight: bold;
     white-space: nowrap;
@@ -195,11 +195,11 @@ body {
 }
 
 #game-user {
-    border: 1px solid #1a1a1a;
+    border: 2px solid #1a1a1a;
     width: 70%;
     height: auto;  /* لضبط الارتفاع حسب المحتوى */
     position: fixed;  /* لجعل العنصر ثابتًا في أسفل الشاشة */
-    bottom: 20px;
+    bottom: 10px;
     left: 10px;
     background-color: rgba(0, 0, 0, 0.9);
     display: flex;
@@ -215,4 +215,5 @@ body {
     color: white;
     font-size: 14px;
     margin-bottom: 5px;  /* لإضافة مسافة بين اليوزر والأيدي */
+    text-align: center;
 }
