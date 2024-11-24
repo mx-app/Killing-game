@@ -90,7 +90,7 @@ async function registerNewUser(userTelegramId, userTelegramName) {
 
 // تحديث واجهة المستخدم
 function updateUI() {
-    uiElements.scoreDisplay.innerText = `${gameState.balance}`;
+    uiElements.scoreDisplay.innerText = `Clicks: ${score}`;
     uiElements.timerDisplay.innerText = `00 : ${timeLeft}`;
 }
 
@@ -109,31 +109,6 @@ async function updateGameState() {
         console.error('Unexpected error while updating game state:', err);
     }
 }
-
-//تحديث القاعده في الوقت الفعلي 
-async function updateGameStateInDatabase(updatedData, supabase, uiElements) {
-    const userId = uiElements.userTelegramIdDisplay.innerText;
-
-    try {
-        const { data, error } = await supabase
-            .from('users')
-            .update(updatedData) // البيانات الجديدة
-            .eq('telegram_id', userId); // شرط التحديث
-
-        if (error) {
-            console.error('Error updating game state in Supabase:', error);
-            return false;
-        }
-
-        console.log('Game state updated successfully in Supabase:', data);
-        return true;
-    } catch (err) {
-        console.error('Unexpected error while updating game state:', err);
-        return false;
-    }
-}
-
-
 
 // بدء اللعبة
 function startGame() {
@@ -159,7 +134,7 @@ function startGame() {
         if (!gameOver) {
             createRandomItem();
         }
-    }, 100000);
+    }, 100); // إسقاط العناصر بسرعة أكبر
 }
 
 // إنهاء اللعبة
@@ -169,11 +144,12 @@ function endGame(isWin) {
     clearInterval(fallingInterval);
 
     if (isWin) {
-        gameState.balance += score;
+        gameState.balance += score; // إضافة السكور إلى الرصيد
         updateGameState();
         alert('Congratulations! You won!');
     } else {
         alert('Game Over! Try again.');
+        score = 0; // إعادة تعيين السكور عند الخسارة
     }
 
     uiElements.retryButton.style.display = 'block';
@@ -182,9 +158,9 @@ function endGame(isWin) {
 // إنشاء عنصر عشوائي
 function createRandomItem() {
     const type = Math.random();
-    if (type < 0.1 && freezeUses > 0) createFreezeItem();
-    else if (type < 0.2) createBombItem();
-    else createFallingItem();
+    if (type < 0.1 && freezeUses > 0) createFreezeItem(); // 10% فرصة للتجميد
+    else if (type < 0.5) createBombItem(); // 50% فرصة للقنبلة
+    else createFallingItem(); // العنصر الرئيسي
 }
 
 // إنشاء عنصر تجميد
@@ -199,14 +175,17 @@ function createFreezeItem() {
 // إنشاء عنصر قنبلة
 function createBombItem() {
     createItem('bombItem', () => {
-        endGame(false);
+        endGame(false); // خسارة
     });
 }
 
 // إنشاء عنصر عادي
 function createFallingItem() {
     createItem('fallingItem', () => {
-        if (!isFrozen) score++;
+        if (!isFrozen) {
+            score++; // تحديث السكور
+            uiElements.scoreDisplay.innerText = `Clicks: ${score}`; // عرض عدد النقرات
+        }
         updateUI();
     });
 }
@@ -227,7 +206,7 @@ function createItem(className, onClick) {
                 document.body.removeChild(item);
                 clearInterval(falling);
                 updateUI();
-             }
+            }
         }
     }, 30);
 
@@ -252,4 +231,3 @@ window.onload = async function () {
     await fetchUserDataFromTelegram();
     startGame();
 };
-
