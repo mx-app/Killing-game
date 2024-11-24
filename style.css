@@ -1,6 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap');
+/* إضافة مكتبة الخطوط */
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500&display=swap");
+
+:root {
+  --shiny-cta-bg: #1a1a1a; /* خلفية الزر */
+  --shiny-cta-bg-subtle: #1a1818; /* خلفية الزر الفرعية */
+  --shiny-cta-fg: #ffffff; /* اللون الأساسي للنص */
+  --shiny-cta-highlight: blue; /* تأثير اللمعان */
+  --shiny-cta-highlight-subtle: #8484ff; /* تأثير اللمعان الخفيف */
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --gradient-angle-offset {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --gradient-percent {
+  syntax: "<percentage>";
+  initial-value: 5%;
+  inherits: false;
+}
+
+@property --gradient-shine {
+  syntax: "<color>";
+  initial-value: white;
+  inherits: false;
+}
+
+/* تصميم الزر */
+.retryButton {
+  --animation: gradient-angle linear infinite;
+  --duration: 3s;
+  --shadow-size: 2px;
+  isolation: isolate;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1.25rem 2.5rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--shiny-cta-fg);
+  background: linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg)) padding-box,
+    conic-gradient(from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
+      transparent,
+      var(--shiny-cta-highlight) var(--gradient-percent),
+      var(--gradient-shine) calc(var(--gradient-percent) * 2),
+      var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
+      transparent calc(var(--gradient-percent) * 4)
+    ) border-box;
+  box-shadow: inset 0 0 0 1px var(--shiny-cta-bg-subtle);
+  border: none;
+  border-radius: 360px;
+  cursor: pointer;
+  outline-offset: 4px;
+  transition: 800ms cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 100;
+  opacity: 0.9;
+  display: none;
+}
+
+/* تأثيرات النقر */
+.retryButton:active {
+  transform: translate(-50%, -50%) scale(0.98);
+  background: var(--shiny-cta-highlight-subtle);
+}
+
+/* تأثيرات التألق */
+.retryButton::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 2px 2px, white 2px, transparent 0)
+    padding-box;
+  background-size: 4px 4px;
+  background-repeat: space;
+  mask-image: conic-gradient(from 45deg, black, transparent 10% 90%, black);
+  border-radius: inherit;
+  opacity: 0.4;
+}
+
+/* التدرج الداخلي */
+.retryButton::after {
+  --animation: shimmer linear infinite;
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
+  mask-image: radial-gradient(circle at bottom, transparent 40%, black);
+  opacity: 0.6;
+}
+
+/* عند التفاعل مع الزر */
+.retryButton:hover, .retryButton:focus-visible {
+  --gradient-percent: 20%;
+  --gradient-angle-offset: 95deg;
+  --gradient-shine: var(--shiny-cta-highlight-subtle);
+  animation-play-state: running;
+}
+
+@keyframes gradient-angle {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 
+
+
+
+
+
+/*  بدايه */
 @media only screen and (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -38,7 +168,8 @@ button, input, select, textarea, img, a {
 
 
 body {
-    font-family: 'Rubik', sans-serif;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
     margin: 0;
     padding: 0;
     background: #000;
@@ -69,13 +200,14 @@ body {
     display: flex;
     justify-content: space-between;  /* توزيع العناصر بالتساوي */
     align-items: center;  /* محاذاة العناصر عموديًا */
-    width: 95%;
-    height: 45px;
+    width: 100%;
+    height: 50px;
     /*border: 2px solid #1a1a1a;
     background-color: rgba(0, 0, 0, 0.9);*/
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
-    top: 2px;
-    left: 50%;                       /* محاذاة الشريط إلى المنتصف أفقيًا */
+    top: 10px;
+    left: 50%;          
+    text-align: center;/* محاذاة الشريط إلى المنتصف أفقيًا */
     transform: translateX(-50%);     /* تعديل الشريط ليتوسط المساحة */
     font-weight: bold;
     white-space: nowrap;
@@ -83,47 +215,64 @@ body {
     z-index: 1000;
 }
 
-#game-bar div {
-    flex: 1;  /* تخصيص مساحة متساوية لكل عنصر */
-    display: flex;
-    justify-content: center;  /* محاذاة المحتوى داخل كل div */
-}
-
-#game-bar div:first-child {
-    justify-content: flex-start;  /* محاذاة العنصر الأول إلى اليسار */
-}
-
-#game-bar div:last-child {
-    justify-content: flex-end;  /* محاذاة العنصر الأخير إلى اليمين */
-}
-
 #score {
-    width: 20%;
-    height: 45px;
+    width: 35%;
+    height: 60%;
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
-    font-size: 14px;
+    font-size: 18px;
     color: white;
     font-weight: bold;
-    padding: 8px;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 3px;
     border-radius: 10px;
-} 
+    margin-top: 55%;
+    display: flex;
+    align-items: center; /* لضبط محاذاة الصورة والنص عموديًا */
+    justify-content: center; /* لضبط المحاذاة أفقيا */
+    padding-left: 5px; /* لتوفير مسافة داخلية بين الصورة والنص */
+}
+
+#score::before {
+    content: "";
+    display: inline-block;
+    width: 20px; /* عرض الصورة */
+    height: 20px; /* ارتفاع الصورة */
+    background-image: url('i/coinsaw.png'); /* رابط الصورة */
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 10px; /* مسافة بين الصورة والنص */
+}
+
 
 #timer {
-    width: 20%;
-    height: 45px;
-    top: 30%;
-    left: 50%;                       
-    transform: translateX(-50%);     
+    width: 35%;
+    height: 60%;
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
-    font-size: 14px;
+    font-size: 18px;
     color: white;
     font-weight: bold;
-    padding: 8px;
+    padding: 3px;
     border-radius: 10px;
+    margin-top: 55%;
+    display: flex;
+    align-items: center; /* لضبط محاذاة الصورة والنص عموديًا */
+    justify-content: center; /* لضبط المحاذاة أفقيا */
+    padding-left: 5px; 
 } 
 
+#timer::before {
+    content: "";
+    display: inline-block;
+    width: 20px; /* عرض الصورة */
+    height: 20px; /* ارتفاع الصورة */
+    background-image: url('i/hour.png'); /* رابط الصورة */
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 4px; /* مسافة بين الصورة والنص */
+}
 
 #gameArea {
     width: 100%;
@@ -190,26 +339,6 @@ body {
     }
 }
 
-.retryButton {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #1a1a1a;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    color: white;
-    z-index: 100;
-    font-weight: bold;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.retryButton i {
-    transform: rotate(45deg);
-}
 
 #gameArea {
     display: flex;
@@ -225,98 +354,139 @@ body {
     margin: 0 15px;
 }
 
-#game-user {
-    border: 2px solid #1a1a1a;
-    width: 50%;
-    height: auto;
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background-color: rgba(0, 0, 0, 0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 2px;
-    margin: 5px;
-    border-radius: 10px;
-    text-align: center;
-    /*visibility: hidden;  *//* إخفاء العنصر بدون التأثير على مساحته */
-}
-
-#game-user span {
-    color: white;
-    font-size: 14px;
-    margin-bottom: 5px;
-    text-align: center;
-}
 
 .FreezeItem {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     background-image: url('i/Freeze.png');
     background-size: cover;
     position: absolute;
     cursor: pointer;
-} 
+    animation: freezeEffect 1s ease-in-out forwards;
+}
+
+@keyframes freezeEffect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.8);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+ 
 
 .bombItem {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-image: url('i/bombb.png');
     background-size: cover;
     position: absolute;
     cursor: pointer;
-} 
-
-.effect {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3rem;
-    color: white;
-    background: rgba(0, 0, 0, 0.5);
-    animation: fadeOut 1s ease-in-out;
+    animation: bombEffect 1s ease-in-out forwards;
 }
 
+@keyframes bombEffect {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+        background-color: red;
+    }
+    100% {
+        transform: scale(1.5);
+        background-color: transparent;
+    }
+}
+ 
 .effect.win {
     background: rgba(0, 255, 0, 0.7);
-    content: "You Win!";
+    color: white;
+    font-size: 3rem;
+    animation: fadeInEffect 1s ease-in-out;
 }
 
 .effect.lose {
     background: rgba(255, 0, 0, 0.7);
-    content: "Game Over!";
+    color: white;
+    font-size: 3rem;
+    animation: fadeInEffect 1s ease-in-out;
 }
 
 .effect.freeze {
     background: rgba(0, 0, 255, 0.7);
-    content: "Frozen!";
+    color: white;
+    font-size: 3rem;
+    animation: fadeInEffect 1s ease-in-out;
 }
 
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-} 
+@keyframes fadeInEffect {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+ 
 
 #gameScore {
-    width: 20%;
-    height: 45px;
+    width: 30%;
+    height: 20px;
     top: 30%;
-    left: 50%;                       
-    transform: translateX(-50%);     
+    left: 50%;                          
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
     font-size: 14px;
     color: white;
     font-weight: bold;
-    padding: 8px;
+    padding: 1px;
     border-radius: 10px;
+} 
+
+/* تصميم الإشعار */
+.notification {
+    position: fixed;
+    top: -100px; /* البداية من فوق الشاشة */
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #343434, #000000, #1a1a1a);
+    color: #fff;
+    padding: 8px 18px; /* زيادة padding لجعل الإشعار طويل */
+    border-radius: 5px;
+    border: 1px solid #343434;
+    font-size: 13px;
+    z-index: 1000;
+    opacity: 0; /* البداية غير مرئية */
+    width: 280px; /* عرض ثابت للإشعار */
+    max-width: 82%; /* الحد الأقصى لعرض الإشعار بنسبة 90% من الشاشة */
+    text-align: center; /* محاذاة النص إلى المنتصف */
+    transition: opacity 0.5s ease, top 0.5s ease; /* انتقال لعناصر الظهور والانزلاق */
+}
+
+/* عند تفعيل الإشعار */
+.notification.show {
+    animation: slideDown 0.5s ease-out forwards; /* تأثير التحريك */
+    opacity: 1; /* مرئية */
+}
+
+/* تأثير التحريك من الأعلى */
+@keyframes slideDown {
+    0% {
+        top: -100px; /* بداية الإشعار من فوق الشاشة */
+        opacity: 0;
+    }
+    100% {
+        top: 14px; /* موقع الإشعار عند الظهور */
+        opacity: 1; /* مرئية */
+    }
+}
+
+
+.frozen-effect {
+  border: 5px solid rgba(173, 216, 230, 0.7); /* تأثير ثلجي */
+  transition: all 0.3s ease-in-out;
 } 
