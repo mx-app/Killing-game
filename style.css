@@ -128,8 +128,22 @@ body {
     padding: 3px;
     border-radius: 10px;
     margin-top: 55%;
+    display: flex;
+    align-items: center; /* لضبط محاذاة الصورة والنص عموديًا */
+    justify-content: center; /* لضبط المحاذاة أفقيا */
+    padding-left: 10px; 
 } 
 
+#timer::before {
+    content: "";
+    display: inline-block;
+    width: 20px; /* عرض الصورة */
+    height: 20px; /* ارتفاع الصورة */
+    background-image: url('i/hour.png'); /* رابط الصورة */
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-right: 4px; /* مسافة بين الصورة والنص */
+}
 
 #gameArea {
     width: 100%;
