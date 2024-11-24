@@ -16,7 +16,7 @@ const uiElements = {
 
 // متغيرات اللعبة
 let score = 0;
-let timeLeft = 60;
+let timeLeft = 10;
 let gameOver = false;
 let freezeUses = 2; // عدد مرات استخدام التجميد
 let isFrozen = false; // حالة التجميد
