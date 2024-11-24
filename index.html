@@ -17,31 +17,36 @@
     
     <!-- واجهة المستخدم -->
     <div class="container">
-        
-        <div id="game-user">
         <!-- بيانات المستخدم -->
-        <div class="user-name" style="display:none;">
-            <div class="user-name"><span id="userTelegramName">Username</span></div>
-            <div class="user-id"><span id="userTelegramId">123456</span></div>
-        </div>        
-            
-        <!-- منطقة اللعبة -->
-        <div id="gameArea">
+        <div id="game-user">
+            <div class="user-name" style="display:none;">
+                <div class="user-name"><span id="userTelegramName">Username</span></div>
+                <div class="user-id"><span id="userTelegramId">123456</span></div>
+            </div>        
 
-            <div id="game-bar">
-            <div id="score"> </div>
-            <div id="timer">00</div>
-           </div>
-        </div>
-        
-        <!-- زر المحاولة مرة أخرى -->
-        <div id="retryButton" class="retryButton" style="display:none;">
-            Try again
+            <!-- منطقة اللعبة -->
+            <div id="gameArea">
+                <div id="game-bar">
+                    <div id="score"> </div>
+                    <div id="timer">00</div>
+                </div>
+            </div>
+
+            <!-- زر بدء اللعبة -->
+            <div id="startButton" class="retryButton">
+                Start Game
+            </div>
+
+            <!-- زر المحاولة مرة أخرى -->
+            <div id="retryButton" class="retryButton" style="display:none;">
+                Try Again
+            </div>
         </div>
     </div>
+
+    <!-- إشعارات -->
     <div id="purchaseNotification" class="notification top-notification"></div>
-     
+
     <script type="module" src="script.js"></script>
-   
 </body>
 </html>
