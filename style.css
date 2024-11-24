@@ -484,3 +484,10 @@ body {
         opacity: 1; /* مرئية */
     }
 }
+
+
+.frozen-effect {
+  filter: blur(3px) brightness(0.7);
+  border: 5px solid rgba(173, 216, 230, 0.7); /* تأثير ثلجي */
+  transition: all 0.3s ease-in-out;
+} 
