@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Killing game</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div id="loadingScreen" class="loading">
@@ -12,7 +13,8 @@
         <div class="dot"></div>
         <div class="dot"></div>
     </div>
-
+    
+ <div class="container" style="display: none;">
     <div id="gameArea">
         <div id="score">Balance : </div>
         <div id="timer">Time: 60</div>
@@ -21,8 +23,11 @@
 
     <div id="retryButton" class="retryButton">
     Try again
-</div>
+   </div>
+ </div>
 
     <script src="script.js"></script>
+
+
 </body>
 </html>
