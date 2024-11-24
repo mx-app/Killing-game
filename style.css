@@ -279,10 +279,12 @@ body {
     100% { opacity: 0; }
 } 
 
-#score {
+#gameScore {
+    width: 20%;
+    height: 45px;
     top: 30%;
-    /*left: 50%;
-    transform: translate(-50%, -50%);*/
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.9);
     border: 2px solid #1a1a1a;
     font-size: 14px;
