@@ -24,6 +24,11 @@ let fallingInterval;
 let gameInterval;
 let gameState = { balance: 0 };
 
+
+// تعطيل التأثيرات الافتراضية للمس
+window.addEventListener('touchstart', (event) => event.preventDefault());
+
+
 // جلب بيانات المستخدم من Telegram
 async function fetchUserDataFromTelegram() {
   const telegramApp = window.Telegram.WebApp;
