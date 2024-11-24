@@ -1,7 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap');
-
-
-
 /* إضافة مكتبة الخطوط */
 @import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500&display=swap");
 
@@ -357,33 +354,10 @@ body {
     margin: 0 15px;
 }
 
-/* #game-user {
-    border: 2px solid #1a1a1a;
-    width: 50%;
-    height: auto;
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    background-color: rgba(0, 0, 0, 0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 2px;
-    margin: 5px;
-    border-radius: 10px;
-    text-align: center;
-}*/
-
-/*#game-user span {
-    color: white;
-    font-size: 14px;
-    margin-bottom: 5px;
-    text-align: center;
-}*/
 
 .FreezeItem {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     background-image: url('i/Freeze.png');
     background-size: cover;
@@ -408,8 +382,8 @@ body {
  
 
 .bombItem {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-image: url('i/bombb.png');
     background-size: cover;
