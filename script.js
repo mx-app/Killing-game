@@ -18,7 +18,6 @@ const uiElements = {
 
 // متغيرات اللعبة
 let score = 0;
-let missedCount = 0;
 let timeLeft = 60;
 let gameOver = false;
 let freezeUses = 2; // عدد مرات استخدام التجميد
@@ -91,9 +90,8 @@ async function registerNewUser(userTelegramId, userTelegramName) {
 
 // تحديث واجهة المستخدم
 function updateUI() {
-    uiElements.scoreDisplay.innerText = `Balance: ${gameState.balance}`;
-    uiElements.missedCountDisplay.innerText = `Missed: ${missedCount}/10`;
-    uiElements.timerDisplay.innerText = `Time: ${timeLeft}`;
+    uiElements.scoreDisplay.innerText = `${gameState.balance}`;
+    uiElements.timerDisplay.innerText = `00 : ${timeLeft}`;
 }
 
 // تحديث بيانات المستخدم في قاعدة البيانات
@@ -141,7 +139,6 @@ async function updateGameStateInDatabase(updatedData, supabase, uiElements) {
 function startGame() {
     gameOver = false;
     score = 0;
-    missedCount = 0;
     timeLeft = 60;
     freezeUses = 2;
     updateUI();
@@ -150,7 +147,7 @@ function startGame() {
     gameInterval = setInterval(() => {
         if (!gameOver) {
             timeLeft--;
-            uiElements.timerDisplay.innerText = `Time: ${timeLeft}`;
+            uiElements.timerDisplay.innerText = `00 : ${timeLeft}`;
             if (timeLeft <= 0) {
                 endGame(true); // فوز
             }
@@ -229,10 +226,8 @@ function createItem(className, onClick) {
             if (item.offsetTop > window.innerHeight - 50) {
                 document.body.removeChild(item);
                 clearInterval(falling);
-                missedCount++;
                 updateUI();
-                if (missedCount >= 10) endGame(false);
-            }
+             }
         }
     }, 30);
 
