@@ -6,6 +6,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // تعريف عناصر واجهة المستخدم
 const uiElements = {
+  purchaseNotification: document.getElementById('purchaseNotification'),
   scoreDisplay: document.getElementById('score'),
   timerDisplay: document.getElementById('timer'),
   retryButton: document.getElementById('retryButton'),
@@ -136,9 +137,9 @@ function endGame(isWin) {
   if (isWin) {
     gameState.balance += score;
     updateGameState();
-    showNotification(`You won! New Balance: ${gameState.balance}`);
+    showNotification(uiElements.purchaseNotification,`You won! New Balance: ${gameState.balance}`);
   } else {
-    showNotification('Game Over! Try again.');
+    showNotification(uiElements.purchaseNotification,'Game Over! Try again.');
     score = 0;
   }
 
