@@ -26,20 +26,6 @@ let fallingInterval;
 // تعريف حالة اللعبة (gameState)
 let gameState = {
     balance: 0,       // رصيد المستخدم
-    energy: 500,      // الطاقة المتاحة
-    maxEnergy: 500,   // الحد الأقصى للطاقة
-    clickMultiplier: 1, // مضاعف النقرة
-    boostLevel: 1,    // مستوى التعزيز
-    coinBoostLevel: 1, // مستوى تعزيز العملات
-    currentLevel: 1,  // المستوى الحالي
-    achievedLevels: [], // المستويات التي تم الوصول إليها
-    friends: 0,       // عدد الأصدقاء
-    fillEnergyCount: 0, // عدد محاولات ملء الطاقة
-    lastFillTime: Date.now(), // وقت آخر ملء للطاقة
-    invites: [],      // قائمة الدعوات
-    claimedRewards: { levels: [] }, // المكافآت المحققة
-    tasksProgress: [], // تقدم المهام
-    completedTasks: [], // المهام المكتملة
 };
 
 // جلب بيانات المستخدم من Telegram والتحقق في قاعدة البيانات
@@ -75,6 +61,9 @@ async function fetchUserDataFromTelegram() {
         await registerNewUser(userTelegramId, userTelegramName);
     }
 }
+
+window.Telegram.WebApp.setHeaderColor('#000000');
+window.Telegram.WebApp.setBackgroundColor('#000000');
 
 // تسجيل مستخدم جديد
 async function registerNewUser(userTelegramId, userTelegramName) {
