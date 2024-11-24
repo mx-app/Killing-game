@@ -22,7 +22,7 @@ let freezeUses = 2; // عدد مرات استخدام التجميد
 let isFrozen = false; // حالة التجميد
 let gameInterval;
 let fallingInterval;
-let itemSpacing = 10; // المسافة بين العناصر المتساقطة
+let itemSpacing = 50; // المسافة بين العناصر المتساقطة
 
 // تعريف حالة اللعبة
 let gameState = {
@@ -133,7 +133,7 @@ function startGame() {
         if (!gameOver) {
             createRandomItem();
         }
-    }, 200); // زيادة الوقت بين كل عنصر وآخر للحصول على سلاسة أكثر
+    }, 50); // زيادة الوقت بين كل عنصر وآخر للحصول على سلاسة أكثر
 }
 
 // إنهاء اللعبة
