@@ -69,12 +69,12 @@ body {
     display: flex;
     justify-content: space-between;  /* توزيع العناصر بالتساوي */
     align-items: center;  /* محاذاة العناصر عموديًا */
-    width: 80%;
+    width: 90%;
     height: 40px;
     background-color: rgba(0, 0, 0, 0.9);
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
     top: 10px;
-    left: 15px;  /* ضبط الموقع في منتصف الشاشة */
+    left: 10px;  /* ضبط الموقع في منتصف الشاشة */
     right: 15px; 
     /*transform: translateX(-50%);  *//* محاذاة العنصر في المنتصف أفقيًا */
     font-weight: bold;
