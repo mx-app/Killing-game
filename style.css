@@ -71,8 +71,8 @@ body {
     align-items: center;  /* محاذاة العناصر عموديًا */
     width: 95%;
     height: 45px;
-    border: 2px solid #1a1a1a;
-    background-color: rgba(0, 0, 0, 0.9);
+    /*border: 2px solid #1a1a1a;
+    background-color: rgba(0, 0, 0, 0.9);*/
     position: fixed;  /* لجعل البار ثابتًا في الأعلى */
     top: 2px;
     left: 50%;                       /* محاذاة الشريط إلى المنتصف أفقيًا */
@@ -96,6 +96,33 @@ body {
 #game-bar div:last-child {
     justify-content: flex-end;  /* محاذاة العنصر الأخير إلى اليمين */
 }
+
+#score {
+    width: 20%;
+    height: 45px;
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 2px solid #1a1a1a;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    padding: 8px;
+    border-radius: 10px;
+} 
+
+#timer {
+    width: 20%;
+    height: 45px;
+    top: 30%;
+    left: 50%;                       
+    transform: translateX(-50%);     
+    background-color: rgba(0, 0, 0, 0.9);
+    border: 2px solid #1a1a1a;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+    padding: 8px;
+    border-radius: 10px;
+} 
 
 
 #gameArea {
