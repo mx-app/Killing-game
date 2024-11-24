@@ -189,7 +189,7 @@ body {
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    background-image: url('i/background.jpg');
+    background-image: url('i/page1.jpg');
     background-size: cover;
     background-position: center;
     border-top-left-radius: 0; 
